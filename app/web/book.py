@@ -62,8 +62,8 @@ def book_detail(isbn):
 
     if current_user.is_authenticated:                   # 判断用户是否登录
         if Gift.query.filter_by(uid=current_user.id,    #在用户的赠送清单中查找
-                                isbn=isbn,
-                                launched=False).first():
+                                isbn=isbn,               #在查找的时候应该通过status属性判断是否已删除
+                                launched=False).first(): #此处通过继承BaseQuery，重写filter_by方法实现（在base.py中）
             has_in_gift = True                          #用户的赠送清单中有这本书，has_in_gift修改为True
         if Wish.query.filter_by(uid=current_user.id,
                                 isbn=isbn,

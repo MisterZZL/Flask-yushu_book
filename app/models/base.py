@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 from datetime import datetime
 
-from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy as _SQLAlchemy, BaseQuery
 from sqlalchemy import SmallInteger, Column, Integer
 
 
@@ -15,21 +15,27 @@ class SQLAlchemy(_SQLAlchemy):
             db.session.rollback()
             raise e
 
-db = SQLAlchemy()
+#此处通过继承BaseQuery，重写filter_by方法实现，以后每次调用filter_by方法的时候就不需要
+#将 status=1 作为参数传入
+class Query(BaseQuery):
+    def filter_by(self, **kwargs):
+        kwargs['status'] = 1
+        return super(Query, self).filter_by(**kwargs)
+db = SQLAlchemy(query_class=Query)
+
 
 class base(db.Model):
-    __abstract__ =True          #抽象模型，不创建真实的表
+    __abstract__ = True  # 抽象模型，不创建真实的表
     status = Column(SmallInteger, default=1)
-    create_time = Column('create_time',Integer)
-
+    create_time = Column('create_time', Integer)
 
     def __init__(self):
         self.create_time = int(datetime.now().timestamp())
 
-    def set_attrs(self,attrs_dict):
-        for key,value in attrs_dict.items():
-            if hasattr(self,key) and key not in ['id']:
-                setattr(self,key,value)
+    def set_attrs(self, attrs_dict):
+        for key, value in attrs_dict.items():
+            if hasattr(self, key) and key not in ['id']:
+                setattr(self, key, value)
 
     @property
     def create_datetime(self):

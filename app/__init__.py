@@ -1,11 +1,15 @@
 #!/usr/bin/env python 
 # -*- coding:utf-8 -*-
 from flask import Flask
+from flask_cache import Cache
 from flask_login import LoginManager
 from app.models.base import db
 
 
-login_manager = LoginManager()
+login_manager = LoginManager()      #实例化登录模块的对象
+cache = Cache()                     #实例化缓存对象
+
+
 def creat_app():
     app = Flask(__name__)
     app.config.from_object('app.source')  # 引入config.py配置文件
@@ -25,6 +29,7 @@ def creat_app():
     # db.init_app(app)
     # db.create_all(app=app)
 
+    cache.init_app(app)
     return app
 def registe_blueprint(app):
     from app.web import web

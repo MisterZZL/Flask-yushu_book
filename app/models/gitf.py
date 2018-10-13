@@ -18,7 +18,7 @@ class Gift(base):
 
     @staticmethod
     def recent():
-        # 差赠送清单列表
+        # 查赠送清单列表
         # launched = False，False表示没有送出的书
         # group_by(Gift.isbn),按照isbn号，把不同的人送的同一本书分到一个组，目的是去重
         # order_by(desc(Gift.create_time))，order_by排序，desc()是降序排列，Gift.create_time赠送的时间

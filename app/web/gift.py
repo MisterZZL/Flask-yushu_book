@@ -3,18 +3,18 @@ from flask_login import login_required, current_user
 from app.models.base import db
 from app.models.gitf import Gift
 from app.spider.yushu_book import YuShu_Book
-from app.view_models.gift import MyGift
+from app.view_models.trade import MyTrade
 from . import web
 
 
 @web.route('/my/gifts')
 @login_required
 def my_gifts():
-    uid = current_user.id
-    gifts_of_mine = Gift.get_user_gifts(uid)
-    isbn_list =[gift.isbn for gift in gifts_of_mine]
-    wish_count_dict = Gift.get_wish_counts(isbn_list)
-    gift = MyGift(gifts_of_mine,wish_count_dict).gifts
+    uid = current_user.id       #获取用户ID
+    trade_of_mine = Gift.get_user_gifts(uid)  #获取用户想要的书
+    isbn_list =[trade.isbn for trade in trade_of_mine]
+    trade_count_dict = Gift.get_wish_counts(isbn_list)
+    gift = MyTrade(trade_of_mine,trade_count_dict).trade
 
 
     return render_template('my_gifts.html',gifts = gift)

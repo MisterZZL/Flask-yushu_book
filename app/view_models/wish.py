@@ -1,4 +1,4 @@
-# class MyGift():
+# class MyWish():
 #     def __init__(self,gifts_of_mine,wish_count_dict):
 #         self.__gifts_of_mine = gifts_of_mine
 #         self.__wish_count_dict = wish_count_dict

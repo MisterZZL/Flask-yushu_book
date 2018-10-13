@@ -8,7 +8,7 @@ from . import web
 def index():
     from app.models.gitf import Gift
     recent_gifts = Gift.recent()                    #调用Gift.recent()方法获得最近上传的书
-    books = []
+    # books = []
     # for gift in recent_gifts:
     #     books.append(Gift.books(gift))
     # books = [gift.books() for gift in recent_gifts]

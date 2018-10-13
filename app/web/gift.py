@@ -1,14 +1,23 @@
-from flask import current_app, flash, redirect, url_for
+from flask import current_app, flash, redirect, url_for, render_template
 from flask_login import login_required, current_user
 from app.models.base import db
 from app.models.gitf import Gift
+from app.spider.yushu_book import YuShu_Book
+from app.view_models.gift import MyGift
 from . import web
 
 
 @web.route('/my/gifts')
 @login_required
 def my_gifts():
-    pass
+    uid = current_user.id
+    gifts_of_mine = Gift.get_user_gifts(uid)
+    isbn_list =[gift.isbn for gift in gifts_of_mine]
+    wish_count_dict = Gift.get_wish_counts(isbn_list)
+    gift = MyGift(gifts_of_mine,wish_count_dict).gifts
+
+
+    return render_template('my_gifts.html',gifts = gift)
 
 
 @web.route('/gifts/book/<isbn>')

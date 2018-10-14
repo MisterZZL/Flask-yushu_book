@@ -1,9 +1,11 @@
+from flask import current_app
 from sqlalchemy import Column, Integer, String, Boolean,Float
 from werkzeug.security import generate_password_hash,check_password_hash
+from flask_login import UserMixin
+from itsdangerous import TimedJSONWebSignatureSerializer
 
 from app.libs.helper import is_isbn_or_key
-from app.models.base import base
-from flask_login import UserMixin
+from app.models.base import base, db
 from app import login_manager
 from app.models.gitf import Gift
 from app.models.wish import Wish
@@ -60,6 +62,24 @@ class User(base,UserMixin):
         else:
             return False
 
+    @property
+    def generater_token(self,expiration = 6000):
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'],expiration)
+        return s.dumps({'id':self.id}).decode('utf-8')
+
+    @staticmethod
+    def reset_password(token,new_password):
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])#将url中获取的token值进行反序列化
+        try:
+            date = s.loads(token.encode('utf-8'))
+        except:
+            return False
+
+        uid = date.get('id')        #反序列化的结果中提取到用户id
+        with db.auto_commit():
+            user = User.query.get(uid)
+            user.password = new_password    #数据库中修改用户密码，利用之前的上下文管理自动提交
+        return True
 
 @login_manager.user_loader
 def get_user(uid):

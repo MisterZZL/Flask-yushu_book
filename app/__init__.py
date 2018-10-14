@@ -3,11 +3,15 @@
 from flask import Flask
 from flask_cache import Cache
 from flask_login import LoginManager
+from flask_mail import Mail
+
 from app.models.base import db
 
 
 login_manager = LoginManager()      #实例化登录模块的对象
 cache = Cache()                     #实例化缓存对象
+
+mail = Mail()
 
 
 def creat_app():
@@ -30,6 +34,7 @@ def creat_app():
     # db.create_all(app=app)
 
     cache.init_app(app)
+    mail.init_app(app)
     return app
 def registe_blueprint(app):
     from app.web import web

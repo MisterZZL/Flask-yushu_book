@@ -58,6 +58,15 @@ class Gift(base):
                                                                               Wish.status == 1).group_by(
             Wish.isbn).all()
 
-        count_dict = {w[1]:w[0] for w in counts_list}       #字典推导式，得到{'9787108006684': 1,'9787108006685': 2,'9787108006686': 3}
+        count_dict = {w[1]: w[0] for w in
+                      counts_list}  # 字典推导式，得到{'9787108006684': 1,'9787108006685': 2,'9787108006686': 3}
 
         return count_dict
+
+    # 判断是不是自己赠送的书
+    # 不能自己给自己送书
+    def is_yourself_gift(self, uid):
+        if self.uid == uid:
+            return True
+        else:
+            return False

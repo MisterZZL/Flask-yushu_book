@@ -12,7 +12,7 @@ def index():
     # for gift in recent_gifts:
     #     books.append(Gift.books(gift))
     # books = [gift.books() for gift in recent_gifts]
-    books = [gift.books for gift in recent_gifts]   #调用Gift.books方法，获取最近上传的书的详情
+    books = [gift.book for gift in recent_gifts]   #调用Gift.books方法，获取最近上传的书的详情
     return render_template('index.html',recent = books)
 
 

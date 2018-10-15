@@ -31,7 +31,7 @@ def send_drift(gid):  # gid = 是被赠送的书本的id，也就是礼物的id
             to=current_gift.user.email,
             subject='有人想要一本书',template='email/get_gift.html',
             gift = current_gift,wisher = current_user)
-
+        flash(message='邮件已发送')
     return render_template('drift.html', gifter=current_gift.user, form=form)
 
 
@@ -64,7 +64,7 @@ def save_drift(drift_form, current_gift):
 
         # 使用这种drift_form.populate_obj()方法时，forms目录
         # #下的book.py中的字段名称要跟models中drift.py下中的字段要相同
-        a=drift_form.populate_obj(drift)  # 记录表单中的信息
+        drift_form.populate_obj(drift)  # 记录表单中的信息
 
         drift.gift_id = current_gift.id
         drift.requester_id = current_user.id
@@ -72,10 +72,11 @@ def save_drift(drift_form, current_gift):
         drift.gifter_nickname = current_gift.user.nickname
         drift.gifter_id = current_gift.user.id
 
-        book = current_gift.books  # 记录书本信息
+        book = current_gift.book  # 记录书本信息
         drift.book_title = book['title']
         drift.book_author = book['author']
         drift.book_image = book['image']
+        c = book['isbn']
         drift.isbn = book['isbn']
 
         current_user.beans -= 1

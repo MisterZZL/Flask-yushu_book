@@ -34,7 +34,7 @@ class MyTrade():
             count = self.__trade_count_dict.get(gift.isbn,0)
             gift = {
                 'trade_count':count,
-                'book':gift.books,
+                'book':gift.book,
                 'id' :gift.id
             }
             temp_trade.append(gift)

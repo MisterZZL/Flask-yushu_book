@@ -1,15 +1,18 @@
 from flask import flash, redirect, url_for, render_template, request
-from flask_login import current_user
+from flask_login import current_user, login_required
+from sqlalchemy import or_, desc
 
 from app.forms.book import DriftForm
 from app.libs.emailer import send_email
 from app.models.base import db
 from app.models.drift import Drift
 from app.models.gitf import Gift
+from app.view_models.drift import DriftCollection, DriftViewModel
 from . import web
 
 
 @web.route('/drift/<int:gid>', methods=['GET', 'POST'])
+@login_required
 def send_drift(gid):  # gid = 是被赠送的书本的id，也就是礼物的id
     current_gift = Gift.query.get_or_404(gid)  # 通过gid去查到集体是那一本书
 
@@ -29,16 +32,25 @@ def send_drift(gid):  # gid = 是被赠送的书本的id，也就是礼物的id
         save_drift(form, current_gift)
         send_email(
             to=current_gift.user.email,
-            subject='有人想要一本书',template='email/get_gift.html',
-            gift = current_gift,wisher = current_user)
+            subject='有人想要一本书', template='email/get_gift.html',
+            gift=current_gift, wisher=current_user)
         flash(message='邮件已发送')
-    return render_template('drift.html', gifter=current_gift.user, form=form)
+        return redirect(url_for('web.pending'))
+    return render_template('drift.html', gifter=current_gift.user.summary, form=form)
 
 
 @web.route('/pending')
+@login_required
 def pending():
-    pass
-
+    #   or_表示或的关系
+    #   作为一个用户，你既可以送书也可以要书，那么在交易记录中，既可能是requester也可能是gifter
+    #   所以这里用或的关系查找
+    drifts = Drift.query.filter(
+        or_(Drift.requester_id == current_user.id,
+            Drift.gifter_id == current_user.id)
+    ).order_by(desc(Drift.create_time)).all()
+    view = DriftCollection(drifts)
+    return render_template('pending.html',drifts = view.data)
 
 @web.route('/drift/<int:did>/reject')
 def reject_drift(did):
@@ -81,4 +93,4 @@ def save_drift(drift_form, current_gift):
 
         current_user.beans -= 1
 
-        db.session.add(drift)   #把drift提交到session中去（跟新到数据库中）
+        db.session.add(drift)  # 把drift提交到session中去（跟新到数据库中）

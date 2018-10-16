@@ -15,7 +15,7 @@ class DriftForm(Form):
                     Length(min=2, max=20, message='收件人姓名长度必须是2到20个字符之间')])
 
     mobile = StringField(
-        validators=[DataRequired(), Regexp('^[0-9]{10}$', 0, '请输入正确的手机号码')])
+        validators=[DataRequired(), Regexp('^[0-9]{11}$', 0, '请输入正确的手机号码')])
 
     message = StringField()
 

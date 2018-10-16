@@ -92,7 +92,8 @@ class User(base, UserMixin):
             return False
 
         success_gift_count = Gift.query.filter_by(uid=self.id, launched=True).count()
-        success_received_count = Drift.query.filter_by(requester_id=self.id,pending=PendingStatus.Success.value).count()
+        success_received_count = Drift.query.filter_by(
+            requester_id=self.id,pending=PendingStatus.Success).count()
         if floor(success_received_count / 2) <= floor(success_gift_count):
             return True
         else:

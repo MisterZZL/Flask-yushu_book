@@ -1,3 +1,4 @@
+from app.libs.enum import PendingStatus
 from app.models.base import base
 
 from sqlalchemy import Column, Integer, String, SmallInteger
@@ -30,4 +31,15 @@ class Drift(base):
     # 状态：赠送成功/等待赠送/撤销赠送/拒绝等四种状态
     # 在libs中定义了一个枚举类
     # 默认为1，等待
-    pending = Column(SmallInteger, default=1)
+    # pending = Column(SmallInteger, default=1)
+
+
+    _pending = Column('pending',SmallInteger,default=1)
+
+    @property
+    def pending(self):
+        return PendingStatus(self._pending)
+
+    @pending.setter
+    def pending(self,status):
+        self._pending = status.value

@@ -107,6 +107,9 @@ class User(base, UserMixin):
             email = self.email,
             send_receive = str(self.send_counter)+'/'+str(self.receive_counter)
         )
+    @property
+    def send_recevie(self):
+        return str(self.send_counter)+'/'+str(self.receive_counter)
 
 
 @login_manager.user_loader

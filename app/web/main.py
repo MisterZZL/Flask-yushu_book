@@ -1,4 +1,5 @@
 from flask import render_template
+from flask_login import login_required
 
 from . import web
 
@@ -17,5 +18,7 @@ def index():
 
 
 @web.route('/personal')
+@login_required
 def personal_center():
-    pass
+
+    return render_template('personal.html')

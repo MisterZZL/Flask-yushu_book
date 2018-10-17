@@ -24,9 +24,19 @@ class LoginForm(EmailForm):
 
 
 class ResetPasswordForm(Form):
-    password1 =PasswordField(
+    password1 = PasswordField(
         validators=[DataRequired(message='密码不能为空'),
                     Length(6, 32, message='密码长度至少为6到32个字符之间'),
                     EqualTo('password2', message='两次输入的密码不相同')])
 
     password2 = PasswordField(validators=[DataRequired(message='密码不能为空'), Length(6, 32)])
+
+
+class ChangePasswordForm(Form):
+    old_password = PasswordField(validators=[DataRequired()])
+    new_password1 = PasswordField(validators=[
+        DataRequired(message='密码不能为空'),
+        Length(6, 32, message='密码长度至少为6到32个字符之间'),
+        EqualTo('new_password2', message='两次输入的密码不相同')])
+
+    new_password2 = PasswordField(validators=[DataRequired(message='密码不能为空'), Length(6, 32)])

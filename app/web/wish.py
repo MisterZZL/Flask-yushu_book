@@ -48,4 +48,7 @@ def satisfy_wish(wid):
 @web.route('/wish/book/<isbn>/redraw')
 @login_required
 def redraw_from_wish(isbn):
-    wish = Wish.query.filter_by(isbn = isbn,uid = current_user.id,)
+    wish = Wish.query.filter_by(isbn = isbn,uid = current_user.id,launched = False).first_or_404()
+    with db.auto_commit():
+        wish.delete()
+    return redirect(url_for('web.my_wish'))

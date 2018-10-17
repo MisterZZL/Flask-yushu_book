@@ -15,12 +15,15 @@ class SQLAlchemy(_SQLAlchemy):
             db.session.rollback()
             raise e
 
-#此处通过继承BaseQuery，重写filter_by方法实现，以后每次调用filter_by方法的时候就不需要
-#将 status=1 作为参数传入
+
+# 此处通过继承BaseQuery，重写filter_by方法实现，以后每次调用filter_by方法的时候就不需要
+# 将 status=1 作为参数传入
 class Query(BaseQuery):
     def filter_by(self, **kwargs):
         kwargs['status'] = 1
         return super(Query, self).filter_by(**kwargs)
+
+
 db = SQLAlchemy(query_class=Query)
 
 
@@ -36,6 +39,9 @@ class base(db.Model):
         for key, value in attrs_dict.items():
             if hasattr(self, key) and key not in ['id']:
                 setattr(self, key, value)
+
+    def delete(self):
+        self.status = 0
 
     @property
     def create_datetime(self):

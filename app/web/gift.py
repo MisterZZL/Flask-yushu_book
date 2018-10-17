@@ -1,6 +1,9 @@
 from flask import current_app, flash, redirect, url_for, render_template
 from flask_login import login_required, current_user
+
+from app.libs.enum import PendingStatus
 from app.models.base import db
+from app.models.drift import Drift
 from app.models.gitf import Gift
 from app.spider.yushu_book import YuShu_Book
 from app.view_models.trade import MyTrade
@@ -10,14 +13,13 @@ from . import web
 @web.route('/my/gifts')
 @login_required
 def my_gifts():
-    uid = current_user.id       #获取用户ID
-    trade_of_mine = Gift.get_user_gifts(uid)  #获取用户想要的书
-    isbn_list =[trade.isbn for trade in trade_of_mine]
+    uid = current_user.id  # 获取用户ID
+    trade_of_mine = Gift.get_user_gifts(uid)  # 获取用户想要的书
+    isbn_list = [trade.isbn for trade in trade_of_mine]
     trade_count_dict = Gift.get_wish_counts(isbn_list)
-    gift = MyTrade(trade_of_mine,trade_count_dict).trade
+    gift = MyTrade(trade_of_mine, trade_count_dict).trade
 
-
-    return render_template('my_gifts.html',gifts = gift)
+    return render_template('my_gifts.html', gifts=gift)
 
 
 @web.route('/gifts/book/<isbn>')
@@ -43,5 +45,14 @@ def save_to_gifts(isbn):
 
 
 @web.route('/gifts/<gid>/redraw')
+@login_required
 def redraw_from_gifts(gid):
-    pass
+    gift = Gift.query.filter_by(uid=current_user.id, id=gid, launched=False).first_or_404()
+    drift = Drift.query.filter_by(gift_id=gid, pending=PendingStatus.Waiting).first()
+    if drift:
+        flash("这个礼物处于交易状态，请前往鱼漂完成交易")
+    else:
+        with db.auto_commit():
+            current_user.beans += current_app.config['BEANS_TRADE_ONE_BOOK']
+            gift.delete()
+    return redirect(url_for('web.my_gifts'))

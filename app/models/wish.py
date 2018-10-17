@@ -28,7 +28,7 @@ class Wish(base):
         return recent_gifts
 
     @property
-    def books(self):
+    def book(self):
         date = YuShu_Book.search_by_isbn(self.isbn)  # isbn号找书，得到书详情数据date
         book = BookViewModel.handle_book_date(date)  # 通过单本书的方法处理date，提取需要的信息
         # 该方法会多次调用豆瓣API，应该使用缓存会比较好(Flask-cache)

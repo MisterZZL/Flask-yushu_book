@@ -36,12 +36,12 @@ class DriftViewModel():
             'book_author': drift.book_author,
             'book_image': drift.book_image,
             'date': drift.create_datetime.strftime('%Y-%m-%d'),
-            'operator': drift.recipient_nickname if you_are != 'requester' else drift.gifter_nickname,
+            'operator': drift.requester_nickname if you_are != 'requester' else drift.gifter_nickname,
             'message': drift.message,
             'address': drift.address,
             'status_str': pending_status,
             'recipient_name': drift.recipient_name,
             'mobile': drift.mobile,
-            'status': drift.status,
+            'status': drift.pending
         }
         return r

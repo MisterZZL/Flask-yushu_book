@@ -1,6 +1,7 @@
 from flask import flash, redirect, url_for, render_template
 from flask_login import login_required, current_user
 from app.models.base import db
+from app.models.drift import Drift
 from app.models.wish import Wish
 from app.view_models.trade import MyTrade
 from . import web
@@ -45,5 +46,6 @@ def satisfy_wish(wid):
 
 
 @web.route('/wish/book/<isbn>/redraw')
+@login_required
 def redraw_from_wish(isbn):
-    pass
+    wish = Wish.query.filter_by(isbn = isbn,uid = current_user.id,)

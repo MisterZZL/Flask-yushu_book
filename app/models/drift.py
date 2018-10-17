@@ -21,7 +21,7 @@ class Drift(base):
 
     # 请求者信息
     requester_id = Column(Integer)
-    recipient_nickname = Column(String(30))
+    requester_nickname = Column(String(30))
 
     # 赠送者信息
     gifter_id = Column(Integer)

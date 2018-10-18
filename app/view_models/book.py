@@ -34,6 +34,8 @@ class BookViewModel():
             'price': date['price'],
             'summary': date['summary'],
             'image': date['image'],
+            'binding':date['binding'],
+            'pubdate': date['pubdate'],
             'isbn': date.get('isbn13') or date.get('isbn10')
         }
         book['intro'] = cls.info(book)

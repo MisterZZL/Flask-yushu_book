@@ -14,4 +14,4 @@ MAIL_PORT = '465'
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
 MAIL_USERNAME = '619246759@qq.com'
-MAIL_PASSWORD = 'apzzmsuaijiabfig'  #通过短信验证收到的授权码，不是qq密码
+MAIL_PASSWORD = 'aaaaaaaaaaaaaaaa'  #通过短信验证收到的授权码，不是qq密码（部署时记得修改）
